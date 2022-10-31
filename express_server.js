@@ -41,7 +41,6 @@ app.get('/urls/new', (req, res) => {
   res.render('urls_new');
 });
 
-
 app.get('/urls/:id', (req, res) => {
   // Gets the id parameter from the request
   const id = req.params.id;
@@ -73,6 +72,7 @@ app.listen(PORT, () => {
 // TODO: Might make sense to refactor these into another file?
 
 function generateRandomString(){
+  // TODO: Implement logic
   let randStr = "";
   return randStr;
 };
