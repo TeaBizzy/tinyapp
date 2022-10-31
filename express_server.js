@@ -71,8 +71,17 @@ app.listen(PORT, () => {
 
 // TODO: Might make sense to refactor these into another file?
 
-const generateRandomString = function() {
-  // TODO: Implement logic
-  let randStr = "";
+const generateRandomString = function(length = 5) {
+  let randStr = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+  for (let i = 0; i < length; i++) {
+    let randIndex = Math.random() * characters.length;
+    randIndex = Math.floor(randIndex);
+    randStr += characters[randIndex];
+  }
+  
   return randStr;
 };
+
+console.log(generateRandomString());
