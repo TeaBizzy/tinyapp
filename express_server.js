@@ -33,7 +33,7 @@ app.get('/urls', (req, res) => {
 
 app.post('/urls', (req, res) => {
   console.log(req.body.longURL);
-  res.send("OK")
+  res.send("OK");
 });
 
 // Must be placed ABOVE the routing for 'urls/:id'
@@ -71,7 +71,7 @@ app.listen(PORT, () => {
 
 // TODO: Might make sense to refactor these into another file?
 
-function generateRandomString(){
+const generateRandomString = function() {
   // TODO: Implement logic
   let randStr = "";
   return randStr;
