@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/TeaBizzy/tinyapp/issues"
   },
-  "homepage": "https://github.com/TeaBizzy/tinyapp#readme"
+  "homepage": "https://github.com/TeaBizzy/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
