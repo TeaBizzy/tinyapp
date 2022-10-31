@@ -26,6 +26,13 @@ app.get('/', (req, res) => {
   res.send('Hello!');
 });
 
+app.get('/u/:id', (req, res) => {
+  const id = req.params.id;
+  const longURL = urlDatabase[id];
+  console.log(longURL);
+  res.redirect(longURL);
+});
+
 app.get('/urls', (req, res) => {
   const templateVars = {urls: urlDatabase};
   res.render('urls_index', templateVars);
