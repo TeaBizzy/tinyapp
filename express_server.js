@@ -36,7 +36,7 @@ app.post('/urls', (req, res) => {
   const newID = generateRandomString(6);
   urlDatabase[newID] = longURL;
   console.log(urlDatabase); // TODO: Remove this line
-  res.redirect(`/urls/${newID}`)
+  res.redirect(`/urls/${newID}`);
 });
 
 // Must be placed ABOVE the routing for 'urls/:id'
