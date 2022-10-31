@@ -22,10 +22,13 @@ app.use(express.urlencoded({extended: true}));
 // _____________________________________________________________________ //
 // *----------------------------- Routing -----------------------------* //
 
+// Home page, displays 'Hello!' to the client
+// TODO: Implement a proper home page, or just redirect the client
 app.get('/', (req, res) => {
   res.send('Hello!');
 });
 
+// Redirects the user to the long URL of the matching 'id' key
 app.get('/u/:id', (req, res) => {
   const id = req.params.id;
   const longURL = urlDatabase[id];
@@ -33,11 +36,14 @@ app.get('/u/:id', (req, res) => {
   res.redirect(longURL);
 });
 
+// Lists all available short URLs and their long URL counterparts
 app.get('/urls', (req, res) => {
   const templateVars = {urls: urlDatabase};
   res.render('urls_index', templateVars);
 });
 
+// Adds a new short URL (key) and long URL (value) pair to the urlDatabase object
+// Redirects the client to view the new short URL
 app.post('/urls', (req, res) => {
   const longURL = req.body.longURL;
   const newID = generateRandomString(6);
@@ -46,11 +52,13 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${newID}`);
 });
 
-// Must be placed ABOVE the routing for 'urls/:id'
+// NOTE: Must be placed ABOVE the routing for 'urls/:id'
+// Displays the form for the client to create a new short url
 app.get('/urls/new', (req, res) => {
   res.render('urls_new');
 });
 
+// Displays the specified short URL for the client
 app.get('/urls/:id', (req, res) => {
   // Gets the id parameter from the request
   const id = req.params.id;
@@ -62,7 +70,8 @@ app.get('/urls/:id', (req, res) => {
   res.render('urls_show.ejs', templateVars);
 });
 
-
+// A route for testing...
+// TODO: We should remove this!
 app.get('/hello', (req, res) => {
   res.send('<html><body>Hello <b>World</b></body></html>\n');
 });
@@ -93,5 +102,3 @@ const generateRandomString = function(length = 5) {
   
   return randStr;
 };
-
-console.log(generateRandomString());
