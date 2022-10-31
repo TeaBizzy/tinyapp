@@ -25,6 +25,17 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
+app.get('/urls/:id', (req, res) => {
+  // Gets the id parameter from the request
+  const id = req.params.id;
+
+  // We can access the full URL from our database with the id
+  const longURL = urlDatabase[urlID];
+  const templateVars = {id, longURL};
+
+  res.render('urls_show.ejs', templateVars);
+});
+
 app.get('/hello', (req, res) => {
   res.send('<html><body>Hello <b>World</b></body></html>\n');
 });
