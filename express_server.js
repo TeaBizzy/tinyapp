@@ -32,7 +32,10 @@ app.get('/urls', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
-  console.log(req.body.longURL);
+  const longURL = req.body.longURL;
+  const newID = generateRandomString(6);
+  urlDatabase[newID] = longURL;
+  console.log(urlDatabase); // TODO: Remove this line
   res.send("OK");
 });
 
