@@ -31,10 +31,16 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
+app.post('/urls', (req, res) => {
+  console.log(req.body.longURL);
+  res.send("OK")
+});
+
 // Must be placed ABOVE the routing for 'urls/:id'
 app.get('/urls/new', (req, res) => {
   res.render('urls_new');
 });
+
 
 app.get('/urls/:id', (req, res) => {
   // Gets the id parameter from the request
@@ -59,3 +65,14 @@ app.get('/hello', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+
+// ______________________________________________________________________________ //
+// *----------------------------- Helper Functions -----------------------------* //
+
+// TODO: Might make sense to refactor these into another file?
+
+function generateRandomString(){
+  let randStr = "";
+  return randStr;
+};
