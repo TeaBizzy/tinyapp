@@ -30,7 +30,7 @@ app.get('/urls/:id', (req, res) => {
   const id = req.params.id;
 
   // We can access the full URL from our database with the id
-  const longURL = urlDatabase[urlID];
+  const longURL = urlDatabase[id];
   const templateVars = {id, longURL};
 
   res.render('urls_show.ejs', templateVars);
