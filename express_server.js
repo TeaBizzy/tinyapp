@@ -83,6 +83,14 @@ app.post('/urls/:id/delete', (req, res) => {
   res.redirect('/urls');
 });
 
+// Logs the user in
+app.post('/login', (req, res) => {
+  const username = req.body.username;
+  console.log(username);
+  res.cookie(username);
+  res.redirect('/urls');
+});
+
 // A route for testing...
 // TODO: We should remove this!
 app.get('/hello', (req, res) => {
