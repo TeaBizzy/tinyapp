@@ -68,6 +68,14 @@ app.get('/urls/:id', (req, res) => {
   res.render('urls_show.ejs', templateVars);
 });
 
+// Edits the urlDatabase at key 'id' with the new longURL
+app.post('/urls/:id', (req, res) => {
+  const id = req.params.id;
+  const longURL = req.body.longURL;
+  urlDatabase[id] = longURL;
+  res.redirect('/urls');
+});
+
 // Deletes the specified id (short URL), from the urlDatabase
 app.post('/urls/:id/delete', (req, res) => {
   const id = req.params.id;
