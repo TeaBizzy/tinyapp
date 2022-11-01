@@ -85,9 +85,9 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // Logs the user in
 app.post('/login', (req, res) => {
+  const key = 'username'
   const username = req.body.username;
-  console.log(username);
-  res.cookie(username);
+  res.cookie(key, username);
   res.redirect('/urls');
 });
 
