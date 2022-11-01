@@ -70,10 +70,9 @@ app.get('/urls/:id', (req, res) => {
 
 // Deletes the specified id (short URL), from the urlDatabase
 app.post('/urls/:id/delete', (req, res) => {
-  console.log(req.params.id);
-  console.log("wtf");
-  delete urlDatabase[req.params.id];
-  console.log(urlDatabase);
+  const id = req.params.id;
+  delete urlDatabase[id];
+  res.redirect('/urls');
 });
 
 // A route for testing...
