@@ -68,6 +68,14 @@ app.get('/urls/:id', (req, res) => {
   res.render('urls_show.ejs', templateVars);
 });
 
+// Deletes the specified id (short URL), from the urlDatabase
+app.post('/urls/:id/delete', (req, res) => {
+  console.log(req.params.id);
+  console.log("wtf");
+  delete urlDatabase[req.params.id];
+  console.log(urlDatabase);
+});
+
 // A route for testing...
 // TODO: We should remove this!
 app.get('/hello', (req, res) => {
