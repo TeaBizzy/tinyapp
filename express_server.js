@@ -32,7 +32,6 @@ app.get('/', (req, res) => {
 app.get('/u/:id', (req, res) => {
   const id = req.params.id;
   const longURL = urlDatabase[id];
-  console.log(longURL);
   res.redirect(longURL);
 });
 
@@ -48,7 +47,6 @@ app.post('/urls', (req, res) => {
   const longURL = req.body.longURL;
   const newID = generateRandomString(6);
   urlDatabase[newID] = longURL;
-  console.log(urlDatabase); // TODO: Remove this line
   res.redirect(`/urls/${newID}`);
 });
 
