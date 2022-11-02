@@ -127,9 +127,9 @@ app.post('/login', (req, res) => {
 // Logs the user out
 app.post('/logout', (req, res) => {
   // TODO: Perhaps change this to find the cookie with this name.
-  const cookie = 'username';
+  const cookie = 'user_id';
   res.clearCookie(cookie);
-  res.redirect('/urls');
+  res.redirect('/login');
 });
 
 // Shows registration page
