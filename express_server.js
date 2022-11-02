@@ -142,6 +142,11 @@ app.post('/register', (req, res) => {
   const userID = generateRandomString(6);
   const email = req.body.email;
   const password = req.body.password;
+  if(!email || !password) {
+    res.status(400);
+    res.send('Error, e-mail and password can\'t be blank. We should probably redirect to a warning??')
+    return;
+  }
   const newUser = {
     userID,
     email,
