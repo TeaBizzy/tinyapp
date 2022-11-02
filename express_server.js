@@ -108,6 +108,14 @@ app.post('/logout', (req, res) => {
   res.redirect('/urls');
 });
 
+// Shows registration page
+app.get('/register', (req, res) => {
+  const templateVars = {
+    username: req.cookies['username'],
+  };
+  res.render('registration', templateVars);
+});
+
 // A route for testing...
 // TODO: We should remove this!
 app.get('/hello', (req, res) => {
