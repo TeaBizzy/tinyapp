@@ -137,6 +137,7 @@ app.get('/register', (req, res) => {
 
 // Registers a new user
 app.post('/register', (req, res) => {
+  // TODO: Check for empty input fields.
   // Create new user obj and append it to the users database
   const userID = generateRandomString(6);
   const email = req.body.email;
@@ -146,6 +147,7 @@ app.post('/register', (req, res) => {
     email,
     password
   };
+  // TODO: Check if user already exists.
   users[userID] = newUser;
 
   const cookie = 'user_id';
