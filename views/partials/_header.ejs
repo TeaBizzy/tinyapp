@@ -20,19 +20,15 @@
     </div>
     <% if (user) { %>
       <form class="form-inline" action="/logout" method="POST" style="justify-content:right">
-        <label for="longURL" style="margin: 1em">Logged in as: <%= user.email %>!</label>
+        <label for="logout" style="margin: 1em">Logged in as: <%= user.email %>!</label>
         <button type="submit" class="btn btn-outline-dark">Logout</button>
       </form>
       <% } else { %>
-        <form class="form-inline" action="/login" method="POST" style="justify-content:right">
-          <input
-            class="form-control"
-            type="text"
-            name="username"
-            placeholder="Username"
-            style="width: 300px; margin: 1em"
-          />
-          <button type="submit" class="btn btn-outline-dark">Login</button>
+        <form class="form-inline" action="/login" method="GET" style="justify-content:right">
+          <button type="submit" class="btn btn-light" style="margin: 5px">Login</button>
+        </form>
+        <form class="form-inline" action="/register" method="GET" style="justify-content:right">
+          <button type="submit" class="btn btn-light" style="margin: 5px">Register</button>
         </form>
     <% } %>
   </nav>
