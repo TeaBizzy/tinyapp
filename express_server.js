@@ -150,7 +150,7 @@ app.post('/register', (req, res) => {
   }
 
   // Check if email is already register to a user
-  if (hasUser(email)) {
+  if (hasUserByEmail(email)) {
     res.status(400);
     res.send(`User: ${email} already exists!`);
     return;
@@ -202,7 +202,7 @@ const generateRandomString = function(length = 5) {
   return randStr;
 };
 
-const hasUser = function(email) {
+const hasUserByEmail = function(email) {
   for (const user in users) {
     if (users[user].email === email) {
       return true;
