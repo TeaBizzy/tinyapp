@@ -129,6 +129,20 @@ app.get('/register', (req, res) => {
   res.render('registration', templateVars);
 });
 
+// Registers a new user
+app.post('/register', (req, res) => {
+  console.log(req.body);
+  const userID = generateRandomString(6);
+  const userEmail = req.body.email;
+  const userPassword = req.body.password;
+  const newUser = {
+    userID,
+    userEmail,
+    userPassword
+  }
+  console.log(newUser);
+});
+
 // A route for testing...
 // TODO: We should remove this!
 app.get('/hello', (req, res) => {
