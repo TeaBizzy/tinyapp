@@ -52,10 +52,13 @@ app.get('/u/:id', (req, res) => {
 
 // Lists all available short URLs and their long URL counterparts
 app.get('/urls', (req, res) => {
+  const userID = req.cookies['user_id'];
+  const user = users[userID];
   const templateVars = {
-    username: req.cookies['username'],
+    user,
     urls: urlDatabase
   };
+  console.log(user);
   res.render('urls_index', templateVars);
 });
 
@@ -78,11 +81,13 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:id', (req, res) => {
   // Gets the id parameter from the request
   const id = req.params.id;
+  const userID = req.cookies['user_id'];
+  const user = users[userID];
 
   // We can access the full URL from our database with the id
   const longURL = urlDatabase[id];
   const templateVars = {
-    username: req.cookies['username'],
+    user,
     id,
     longURL
   };
@@ -123,8 +128,10 @@ app.post('/logout', (req, res) => {
 
 // Shows registration page
 app.get('/register', (req, res) => {
+  const userID = req.cookies['user_id'];
+  const user = users[userID];
   const templateVars = {
-    username: req.cookies['username'],
+    user
   };
   res.render('registration', templateVars);
 });
