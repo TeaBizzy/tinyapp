@@ -24,7 +24,7 @@ const users = {
     email: 'user2@example.com',
     password: 'dishwasher-funk'
   }
-}
+};
 
 
 // ________________________________________________________________________ //
@@ -116,7 +116,7 @@ app.post('/login', (req, res) => {
 // Logs the user out
 app.post('/logout', (req, res) => {
   // TODO: Perhaps change this to find the cookie with this name.
-  const cookie = 'username'
+  const cookie = 'username';
   res.clearCookie(cookie);
   res.redirect('/urls');
 });
