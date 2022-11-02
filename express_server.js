@@ -131,7 +131,7 @@ app.get('/register', (req, res) => {
 
 // Registers a new user
 app.post('/register', (req, res) => {
-  console.log(req.body);
+  // Create new user obj and append it to the users database
   const userID = generateRandomString(6);
   const userEmail = req.body.email;
   const userPassword = req.body.password;
@@ -139,8 +139,13 @@ app.post('/register', (req, res) => {
     userID,
     userEmail,
     userPassword
-  }
-  console.log(newUser);
+  };
+  users[userID] = newUser;
+
+  const cookie = 'user_id';
+  res.cookie(cookie, userID);
+
+  res.redirect('/urls');
 });
 
 // A route for testing...
