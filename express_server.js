@@ -137,22 +137,30 @@ app.get('/register', (req, res) => {
 
 // Registers a new user
 app.post('/register', (req, res) => {
-  // TODO: Check for empty input fields.
   // Create new user obj and append it to the users database
   const userID = generateRandomString(6);
   const email = req.body.email;
   const password = req.body.password;
+
+  // Check for empty email / password
   if (!email || !password) {
     res.status(400);
     res.send('Error, e-mail and password can\'t be blank. We should probably redirect to a warning??');
     return;
   }
+
+  // Check if email is already register to a user
+  if (hasUser(email)) {
+    res.status(400);
+    res.send(`User: ${email} already exists!`);
+    return;
+  }
+
   const newUser = {
     userID,
     email,
     password
   };
-  // TODO: Check if user already exists.
   users[userID] = newUser;
 
   const cookie = 'user_id';
@@ -192,4 +200,14 @@ const generateRandomString = function(length = 5) {
   }
   
   return randStr;
+};
+
+const hasUser = function(email) {
+  for (const user in users) {
+    if (users[user].email === email) {
+      console.log(`User: ${email} already exists!`);
+      return true;
+    }
+  }
+  return false;
 };
