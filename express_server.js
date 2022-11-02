@@ -100,6 +100,14 @@ app.post('/login', (req, res) => {
   res.redirect('/urls');
 });
 
+// Logs the user out
+app.post('/logout', (req, res) => {
+  // TODO: Perhaps change this to find the cookie with this name.
+  const cookie = 'username'
+  res.clearCookie(cookie);
+  res.redirect('/urls');
+});
+
 // A route for testing...
 // TODO: We should remove this!
 app.get('/hello', (req, res) => {
