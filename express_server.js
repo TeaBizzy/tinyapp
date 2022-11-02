@@ -58,7 +58,6 @@ app.get('/urls', (req, res) => {
     user,
     urls: urlDatabase
   };
-  console.log(user);
   res.render('urls_index', templateVars);
 });
 
@@ -140,12 +139,12 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   // Create new user obj and append it to the users database
   const userID = generateRandomString(6);
-  const userEmail = req.body.email;
-  const userPassword = req.body.password;
+  const email = req.body.email;
+  const password = req.body.password;
   const newUser = {
     userID,
-    userEmail,
-    userPassword
+    email,
+    password
   };
   users[userID] = newUser;
 
