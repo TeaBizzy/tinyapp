@@ -118,9 +118,10 @@ app.get('/login', (req, res) => {
 
 // Logs the user in
 app.post('/login', (req, res) => {
-  const key = 'username';
-  const username = req.body.username;
-  res.cookie(key, username);
+  const key = 'user_id';
+  const email = req.body.email;
+  const user = getUserByEmail(email);
+  res.cookie(key, user.id);
   res.redirect('/urls');
 });
 
@@ -157,7 +158,7 @@ app.post('/register', (req, res) => {
   }
 
   // Check if email is already register to a user
-  if (hasUserByEmail(email)) {
+  if (getUserByEmail(email)) {
     res.status(400);
     res.send(`User: ${email} already exists!`);
     return;
@@ -209,10 +210,10 @@ const generateRandomString = function(length = 5) {
   return randStr;
 };
 
-const hasUserByEmail = function(email) {
+const getUserByEmail = function(email) {
   for (const user in users) {
     if (users[user].email === email) {
-      return true;
+      return user;
     }
   }
   return false;
