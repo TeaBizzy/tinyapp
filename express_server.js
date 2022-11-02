@@ -205,7 +205,6 @@ const generateRandomString = function(length = 5) {
 const hasUser = function(email) {
   for (const user in users) {
     if (users[user].email === email) {
-      console.log(`User: ${email} already exists!`);
       return true;
     }
   }
