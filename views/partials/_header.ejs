@@ -16,13 +16,11 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-
-
       </div>
     </div>
-    <% if (username) { %>
+    <% if (user) { %>
       <form class="form-inline" action="/logout" method="POST" style="justify-content:right">
-        <label for="longURL" style="margin: 1em">Logged in as: <%= username %>!</label>
+        <label for="longURL" style="margin: 1em">Logged in as: <%= user.userEmail %>!</label>
         <button type="submit" class="btn btn-outline-dark">Logout</button>
       </form>
       <% } else { %>
