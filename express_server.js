@@ -109,6 +109,13 @@ app.post('/urls/:id/delete', (req, res) => {
   res.redirect('/urls');
 });
 
+app.get('/login', (req, res) => {
+  const templateVars = {
+    user: undefined
+  };
+  res.render('login', templateVars);
+});
+
 // Logs the user in
 app.post('/login', (req, res) => {
   const key = 'username';
