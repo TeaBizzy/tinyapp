@@ -137,7 +137,7 @@ app.post('/login', (req, res) => {
     return;
   }
 
-  res.cookie(key, user.userID);
+  res.cookie(key, user.id);
   res.redirect('/urls');
 });
 
@@ -162,7 +162,7 @@ app.get('/register', (req, res) => {
 // Registers a new user
 app.post('/register', (req, res) => {
   // Create new user obj and append it to the users database
-  const userID = generateRandomString(6);
+  const id = generateRandomString(6);
   const email = req.body.email;
   const password = req.body.password;
 
@@ -179,16 +179,16 @@ app.post('/register', (req, res) => {
     res.send(`User: ${email} already exists!`);
     return;
   }
-  
+
   const newUser = {
-    userID,
+    id,
     email,
     password
   };
-  users[userID] = newUser;
+  users[id] = newUser;
 
   const cookie = 'user_id';
-  res.cookie(cookie, userID);
+  res.cookie(cookie, id);
 
   res.redirect('/urls');
 });
