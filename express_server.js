@@ -64,6 +64,10 @@ app.get('/u/:id', (req, res) => {
 // Lists all available short URLs and their long URL counterparts
 app.get('/urls', (req, res) => {
   const userID = req.cookies['user_id'];
+  if (!userID) {
+    res.send('Error Please login to view URLs');
+    return;
+  }
   const user = users[userID];
   const templateVars = {
     user,
