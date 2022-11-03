@@ -64,6 +64,11 @@ app.get('/urls', (req, res) => {
 // Adds a new short URL (key) and long URL (value) pair to the urlDatabase object
 // Redirects the client to view the new short URL
 app.post('/urls', (req, res) => {
+  const userID = req.cookies['user_id'];
+  if (!userID) {
+    res.send('You must be logged in to shorten URLs!');
+    return;
+  }
   const longURL = req.body.longURL;
   const newID = generateRandomString();
   urlDatabase[newID] = longURL;
