@@ -84,7 +84,7 @@ app.post('/urls', (req, res) => {
 // Displays the form for the client to create a new short url
 app.get('/urls/new', (req, res) => {
   const userID = req.cookies['user_id'];
-  if(!userID) {
+  if (!userID) {
     res.redirect('/login');
     return;
   }
@@ -131,7 +131,7 @@ app.post('/urls/:id/delete', (req, res) => {
 app.get('/login', (req, res) => {
   const userID = req.cookies['user_id'];
   // Redirect if user is already logged in
-  if(userID) {
+  if (userID) {
     res.redirect('/urls');
     return;
   }
