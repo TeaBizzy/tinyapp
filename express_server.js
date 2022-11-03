@@ -6,23 +6,12 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const methodOverride = require('method-override');
 const { getUserByEmail, generateRandomString, getUrlsByUserID } = require('./helpers');
-const { promiseImpl } = require('ejs');
+const urlsDatabase = require('./databases/urls');
 const app = express();
 const PORT = 8080; // default port 8080
 const saltRounds = 10;
 
 app.set('view engine', 'ejs');
-
-const urlDatabase = {
-  'b2xVn2': {
-    longURL: 'http://www/lighthouselabs.ca',
-    userID: 'aJ48lW'
-  },
-  '9sm5xK': {
-    longURL: 'http://www.google.com',
-    userID: 'aJ48lw'
-  }
-};
 
 const users = {
   userRandomID: {
@@ -61,12 +50,12 @@ app.get('/', (req, res) => {
 // Redirects the user to the long URL of the matching 'id' key
 app.get('/u/:id', (req, res) => {
   const id = req.params.id;
-  if (!urlDatabase[id]) {
+  if (!urlsDatabase[id]) {
     res.status(500);
     res.send('This short URL doesn\'t exist!');
     return;
   }
-  const longURL = urlDatabase[id].longURL;
+  const longURL = urlsDatabase[id].longURL;
   res.redirect(longURL);
 });
 
@@ -80,7 +69,7 @@ app.get('/urls', (req, res) => {
   const user = users[userID];
   const templateVars = {
     user,
-    urls: getUrlsByUserID(userID, urlDatabase)
+    urls: getUrlsByUserID(userID, urlsDatabase)
   };
   res.render('urls_index', templateVars);
 });
@@ -99,7 +88,7 @@ app.post('/urls', (req, res) => {
     longURL,
     userID
   };
-  urlDatabase[newID] = newURL;
+  urlsDatabase[newID] = newURL;
   res.redirect(`/urls/${newID}`);
 });
 
@@ -130,13 +119,13 @@ app.get('/urls/:id', (req, res) => {
     return;
   }
 
-  if (urlDatabase[id].userID !== userID) {
+  if (urlsDatabase[id].userID !== userID) {
     res.send('This URL belongs to someone else');
     return;
   }
 
   // We can access the full URL from our database with the id
-  const longURL = urlDatabase[id].longURL;
+  const longURL = urlsDatabase[id].longURL;
   const templateVars = {
     user,
     id,
@@ -157,17 +146,17 @@ app.put('/urls/:id', (req, res) => {
     return;
   }
 
-  if (!urlDatabase[id]) {
+  if (!urlsDatabase[id]) {
     res.send('That URL doesn\'t exist!');
     return;
   }
 
-  if (urlDatabase[id].userID !== userID) {
+  if (urlsDatabase[id].userID !== userID) {
     res.send('You do not own this URL!');
     return;
   }
 
-  urlDatabase[id].longURL = longURL;
+  urlsDatabase[id].longURL = longURL;
   res.redirect('/urls');
 });
 
@@ -181,17 +170,17 @@ app.delete('/urls/:id/delete', (req, res) => {
     return;
   }
 
-  if (!urlDatabase[id]) {
+  if (!urlsDatabase[id]) {
     res.send('That URL doesn\'t exist!');
     return;
   }
 
-  if (urlDatabase[id].userID !== userID) {
+  if (urlsDatabase[id].userID !== userID) {
     res.send('You do not own this URL!');
     return;
   }
 
-  delete urlDatabase[id];
+  delete urlsDatabase[id];
   res.redirect('/urls');
 });
 
