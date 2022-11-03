@@ -4,7 +4,7 @@
 const express = require('express');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
-const { getUserByEmail } = require('./helpers')
+const { getUserByEmail, generateRandomString } = require('./helpers')
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -301,19 +301,6 @@ app.listen(PORT, () => {
 // *----------------------------- Helper Functions -----------------------------* //
 
 // TODO: Might make sense to refactor these into another file?
-
-const generateRandomString = function(length = 6) {
-  let randStr = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-  for (let i = 0; i < length; i++) {
-    let randIndex = Math.random() * characters.length;
-    randIndex = Math.floor(randIndex);
-    randStr += characters[randIndex];
-  }
-  
-  return randStr;
-};
 
 const getUrlsByUserID = function(userID) {
   const result = {};
