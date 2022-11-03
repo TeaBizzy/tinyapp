@@ -9,14 +9,14 @@ const PORT = 8080; // default port 8080
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
-  'b2xVn2': { 
+  'b2xVn2': {
     longURL: 'http://www/lighthouselabs.ca',
     userID: 'aJ48lW'
   },
   '9sm5xK': {
     longURL: 'http://www.google.com',
     userID: 'aJ48lw'
-  } 
+  }
 };
 
 const users = {
