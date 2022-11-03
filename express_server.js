@@ -6,6 +6,7 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const methodOverride = require('method-override');
 const { getUserByEmail, generateRandomString, getUrlsByUserID } = require('./helpers');
+const { promiseImpl } = require('ejs');
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -210,10 +211,8 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  // TODO: Make async!
-  const hashedPassword = bcrypt.hashSync(password, 10);
   const user = getUserByEmail(email, users);
-
+  
   // Check if the user exists
   if (!user) {
     res.status(403);
@@ -221,15 +220,18 @@ app.post('/login', (req, res) => {
     return;
   }
 
-  // Checks that the password is valid
-  // TODO: Make async!
-  if (!bcrypt.compareSync(password, hashedPassword)) {
-    res.status(403);
-    res.send('Error, invalid password');
-    return;
-  }
-  req.session.user_id = user.id;
-  res.redirect('/urls');
+  bcrypt.compare(password, user.hashedPassword)
+    .then((isValid) => {
+      if (isValid) {
+        console.log(isValid);
+        req.session.user_id = user.id;
+        res.redirect('/urls');
+        return;
+      } else {
+        res.status(403);
+        res.send('Error, invalid email or password');
+      }
+    });
 });
 
 // Logs the user out
@@ -260,31 +262,31 @@ app.post('/register', (req, res) => {
   const id = generateRandomString();
   const email = req.body.email;
   let password = req.body.password;
-  // TODO: Make async!
-  password = bcrypt.hashSync(password, 10);
-
+  
   // Check for empty email / password
   if (!email || !password) {
     res.status(400);
     res.send('Error, e-mail and password can\'t be blank. We should probably redirect to a warning??');
     return;
   }
-
+  
   // Check if email is already register to a user
   if (getUserByEmail(email, users)) {
     res.status(400);
     res.send(`User: ${email} already exists!`);
     return;
   }
-
-  const newUser = {
-    id,
-    email,
-    password
-  };
-  users[id] = newUser;
-  req.session.user_id = id;
-  res.redirect('/urls');
+  // TODO: Change salt rounds to a varaible
+  bcrypt.hash(password, 15).then((hashedPassword) => {
+    const newUser = {
+      id,
+      email,
+      hashedPassword
+    };
+    users[id] = newUser;
+    req.session.user_id = id;
+    res.redirect('/urls');
+  });
 });
 
 // A route for testing...
