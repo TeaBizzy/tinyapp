@@ -120,8 +120,24 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const key = 'user_id';
   const email = req.body.email;
+  const password = req.body.password;
   const user = getUserByEmail(email);
-  res.cookie(key, user.id);
+  
+  // Check if the user exists
+  if(!user) {
+    res.status(403);
+    res.send('Error, no user with that e-mail exists!');
+    return;
+  }
+
+  // Checks that the password is valid
+  if(user.password !== password) {
+    res.status(403);
+    res.send('Error, invalid password');
+    return;
+  }
+
+  res.cookie(key, user.userID);
   res.redirect('/urls');
 });
 
@@ -163,7 +179,7 @@ app.post('/register', (req, res) => {
     res.send(`User: ${email} already exists!`);
     return;
   }
-
+  
   const newUser = {
     userID,
     email,
@@ -213,7 +229,7 @@ const generateRandomString = function(length = 5) {
 const getUserByEmail = function(email) {
   for (const user in users) {
     if (users[user].email === email) {
-      return user;
+      return users[user];
     }
   }
   return false;
