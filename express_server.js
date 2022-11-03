@@ -208,7 +208,7 @@ app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const hashedPassword = bcrypt.hashSync(password, 10);
-  const user = getUserByEmail(email);
+  const user = getUserByEmail(email, users);
 
   // Check if the user exists
   if (!user) {
@@ -265,7 +265,7 @@ app.post('/register', (req, res) => {
   }
 
   // Check if email is already register to a user
-  if (getUserByEmail(email)) {
+  if (getUserByEmail(email, users)) {
     res.status(400);
     res.send(`User: ${email} already exists!`);
     return;
@@ -314,10 +314,10 @@ const generateRandomString = function(length = 6) {
   return randStr;
 };
 
-const getUserByEmail = function(email) {
-  for (const user in users) {
-    if (users[user].email === email) {
-      return users[user];
+const getUserByEmail = function(email, database) {
+  for (const user in database) {
+    if (database[user].email === email) {
+      return database[user];
     }
   }
   return false;
