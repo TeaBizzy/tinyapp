@@ -2,7 +2,7 @@
 // *----------------------------- Configuration -----------------------------* //
 
 const express = require('express');
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const app = express();
 const PORT = 8080; // default port 8080
@@ -38,7 +38,10 @@ const users = {
 // *----------------------------- Middleware -----------------------------* //
 
 app.use(express.urlencoded({extended: true}));
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1, key2, key3']
+}));
 
 
 // _____________________________________________________________________ //
@@ -64,7 +67,7 @@ app.get('/u/:id', (req, res) => {
 
 // Lists all available short URLs and their long URL counterparts
 app.get('/urls', (req, res) => {
-  const userID = req.cookies['user_id'];
+  const userID = req.session.user_id;
   if (!userID) {
     res.send('Error Please login to view URLs');
     return;
@@ -80,7 +83,7 @@ app.get('/urls', (req, res) => {
 // Adds a new short URL (key) and long URL (value) pair to the urlDatabase object
 // Redirects the client to view the new short URL
 app.post('/urls', (req, res) => {
-  const userID = req.cookies['user_id'];
+  const userID = req.session.user_id;
   if (!userID) {
     res.send('You must be logged in to shorten URLs!');
     return;
@@ -98,7 +101,7 @@ app.post('/urls', (req, res) => {
 // NOTE: Must be placed ABOVE the routing for 'urls/:id'
 // Displays the form for the client to create a new short url
 app.get('/urls/new', (req, res) => {
-  const userID = req.cookies['user_id'];
+  const userID = req.session.user_id;
   if (!userID) {
     res.redirect('/login');
     return;
@@ -114,7 +117,7 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:id', (req, res) => {
   // Gets the id parameter from the request
   const id = req.params.id;
-  const userID = req.cookies['user_id'];
+  const userID = req.session.user_id;
   const user = users[userID];
 
   if (!userID) {
@@ -141,7 +144,7 @@ app.get('/urls/:id', (req, res) => {
 // Edits the urlDatabase at key 'id' with the new longURL
 app.post('/urls/:id', (req, res) => {
   const id = req.params.id;
-  const userID = req.cookies['user_id'];
+  const userID = req.session.user_id;
   const longURL = req.body.longURL;
 
   if (!userID) {
@@ -166,7 +169,7 @@ app.post('/urls/:id', (req, res) => {
 // Deletes the specified id (short URL), from the urlDatabase
 app.post('/urls/:id/delete', (req, res) => {
   const id = req.params.id;
-  const userID = req.cookies['user_id'];
+  const userID = req.session.user_id;
 
   if (!userID) {
     res.send('You need to be logged in to delete a URL');
@@ -188,7 +191,7 @@ app.post('/urls/:id/delete', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  const userID = req.cookies['user_id'];
+  const userID = req.session.user_id;
   // Redirect if user is already logged in
   if (userID) {
     res.redirect('/urls');
@@ -202,7 +205,6 @@ app.get('/login', (req, res) => {
 
 // Logs the user in
 app.post('/login', (req, res) => {
-  const key = 'user_id';
   const email = req.body.email;
   const password = req.body.password;
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -221,22 +223,20 @@ app.post('/login', (req, res) => {
     res.send('Error, invalid password');
     return;
   }
-
-  res.cookie(key, user.id);
+  req.session.user_id = user.id;
   res.redirect('/urls');
 });
 
 // Logs the user out
 app.post('/logout', (req, res) => {
   // TODO: Perhaps change this to find the cookie with this name.
-  const cookie = 'user_id';
-  res.clearCookie(cookie);
+  req.session = null;
   res.redirect('/login');
 });
 
 // Shows registration page
 app.get('/register', (req, res) => {
-  const userID = req.cookies['user_id'];
+  const userID = req.session.user_id;
   const user = users[userID];
   // Redirect if user is already logged in
   if (user) {
@@ -277,9 +277,7 @@ app.post('/register', (req, res) => {
     password
   };
   users[id] = newUser;
-  const cookie = 'user_id';
-  res.cookie(cookie, id);
-
+  req.session.user_id = id;
   res.redirect('/urls');
 });
 
