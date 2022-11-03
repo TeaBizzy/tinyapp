@@ -7,24 +7,12 @@ const bcrypt = require('bcryptjs');
 const methodOverride = require('method-override');
 const { getUserByEmail, generateRandomString, getUrlsByUserID } = require('./helpers');
 const urlsDatabase = require('./databases/urls');
+const usersDatabase = require('./databases/users');
 const app = express();
 const PORT = 8080; // default port 8080
 const saltRounds = 10;
 
 app.set('view engine', 'ejs');
-
-const users = {
-  userRandomID: {
-    id: 'userRandomID',
-    email: 'user@example.com',
-    password: 'purple-monkey-dinosaur'
-  },
-  user2RandomID: {
-    id: 'user2RandomID',
-    email: 'user2@example.com',
-    password: 'dishwasher-funk'
-  }
-};
 
 
 // ________________________________________________________________________ //
@@ -66,7 +54,7 @@ app.get('/urls', (req, res) => {
     res.send('Error Please login to view URLs');
     return;
   }
-  const user = users[userID];
+  const user = usersDatabase[userID];
   const templateVars = {
     user,
     urls: getUrlsByUserID(userID, urlsDatabase)
@@ -102,7 +90,7 @@ app.get('/urls/new', (req, res) => {
   }
 
   const templateVars = {
-    user: users[userID]
+    user: usersDatabase[userID]
   };
   res.render('urls_new', templateVars);
 });
@@ -112,7 +100,7 @@ app.get('/urls/:id', (req, res) => {
   // Gets the id parameter from the request
   const id = req.params.id;
   const userID = req.session.user_id;
-  const user = users[userID];
+  const user = usersDatabase[userID];
 
   if (!userID) {
     res.send('Please login to view URLs!');
@@ -201,7 +189,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  const user = getUserByEmail(email, users);
+  const user = getUserByEmail(email, usersDatabase);
 
   // Check if the user exists
   if (!user) {
@@ -234,7 +222,7 @@ app.post('/logout', (req, res) => {
 // Shows registration page
 app.get('/register', (req, res) => {
   const userID = req.session.user_id;
-  const user = users[userID];
+  const user = usersDatabase[userID];
   // Redirect if user is already logged in
   if (user) {
     res.redirect('/urls');
@@ -261,7 +249,7 @@ app.post('/register', (req, res) => {
   }
   
   // Check if email is already register to a user
-  if (getUserByEmail(email, users)) {
+  if (getUserByEmail(email, usersDatabase)) {
     res.status(400);
     res.send(`User: ${email} already exists!`);
     return;
@@ -273,7 +261,7 @@ app.post('/register', (req, res) => {
       email,
       hashedPassword
     };
-    users[id] = newUser;
+    usersDatabase[id] = newUser;
     req.session.user_id = id;
     res.redirect('/urls');
   });
