@@ -9,8 +9,14 @@ const PORT = 8080; // default port 8080
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
-  'b2xVn2': 'http://www/lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com'
+  'b2xVn2': { 
+    longURL: 'http://www/lighthouselabs.ca',
+    userID: 'aJ48lW'
+  },
+  '9sm5xK': {
+    longURL: 'http://www.google.com',
+    userID: 'aJ48lw'
+  } 
 };
 
 const users = {
@@ -51,7 +57,7 @@ app.get('/u/:id', (req, res) => {
     res.send('This short URL doesn\'t exist!');
     return;
   }
-  const longURL = urlDatabase[id];
+  const longURL = urlDatabase[id].longURL;
   res.redirect(longURL);
 });
 
@@ -76,7 +82,12 @@ app.post('/urls', (req, res) => {
   }
   const longURL = req.body.longURL;
   const newID = generateRandomString();
-  urlDatabase[newID] = longURL;
+  const newURL = {
+    longURL,
+    userID
+  };
+  urlDatabase[newID] = newURL;
+  console.log(urlDatabase);
   res.redirect(`/urls/${newID}`);
 });
 
@@ -103,7 +114,7 @@ app.get('/urls/:id', (req, res) => {
   const user = users[userID];
 
   // We can access the full URL from our database with the id
-  const longURL = urlDatabase[id];
+  const longURL = urlDatabase[id].longURL;
   const templateVars = {
     user,
     id,
@@ -117,7 +128,7 @@ app.get('/urls/:id', (req, res) => {
 app.post('/urls/:id', (req, res) => {
   const id = req.params.id;
   const longURL = req.body.longURL;
-  urlDatabase[id] = longURL;
+  urlDatabase[id].longURL = longURL;
   res.redirect('/urls');
 });
 
