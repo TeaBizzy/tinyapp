@@ -208,6 +208,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  // TODO: Make async!
   const hashedPassword = bcrypt.hashSync(password, 10);
   const user = getUserByEmail(email, users);
 
@@ -219,6 +220,7 @@ app.post('/login', (req, res) => {
   }
 
   // Checks that the password is valid
+  // TODO: Make async!
   if (!bcrypt.compareSync(password, hashedPassword)) {
     res.status(403);
     res.send('Error, invalid password');
@@ -256,6 +258,7 @@ app.post('/register', (req, res) => {
   const id = generateRandomString();
   const email = req.body.email;
   let password = req.body.password;
+  // TODO: Make async!
   password = bcrypt.hashSync(password, 10);
 
   // Check for empty email / password
