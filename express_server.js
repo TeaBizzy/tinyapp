@@ -32,7 +32,7 @@ app.use(cookieSession({
 // Home page, displays 'Hello!' to the client
 // TODO: Implement a proper home page, or just redirect the client
 app.get('/', (req, res) => {
-  res.send('Hello!');
+  res.redirect('/login');
 });
 
 // Redirects the user to the long URL of the matching 'id' key
@@ -265,6 +265,10 @@ app.post('/register', (req, res) => {
     req.session.user_id = id;
     res.redirect('/urls');
   });
+});
+
+app.get('/*', (req, res) => {
+  res.redirect('/login');
 });
 
 
