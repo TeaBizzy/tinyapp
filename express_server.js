@@ -120,6 +120,11 @@ app.get('/urls/:id', (req, res) => {
     res.send('Please login to view URLs!');
     return;
   }
+  
+  if(urlDatabase[id].userID !== userID) {
+    res.send('This URL belongs to someone else');
+    return;
+  }
 
   // We can access the full URL from our database with the id
   const longURL = urlDatabase[id].longURL;
