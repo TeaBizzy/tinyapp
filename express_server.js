@@ -30,6 +30,9 @@ app.use(cookieSession({
 // *----------------------------- Routing -----------------------------* //
 
 
+// ________________________________ //
+// *------ Short Link Route ------* //
+
 // Redirects the user to the long URL of the matching 'id' key
 app.get('/u/:id', (req, res) => {
   const id = req.params.id;
@@ -41,29 +44,38 @@ app.get('/u/:id', (req, res) => {
   res.redirect(longURL);
 });
 
-// Lists all available short URLs and their long URL counterparts
+
+// ________________________________ //
+// *-------- /urls Routes --------* //
+
+// Lists all URLs owned by the user
 app.get('/urls', (req, res) => {
   const userID = req.session.user_id;
   const isLoggedIn = userID ? true : false;
+
   if (!isLoggedIn) {
     return res.send('Error Please login to view URLs');
   }
+
   const user = usersDatabase[userID];
   const templateVars = {
     user,
     urls: getUrlsByUserID(userID, urlsDatabase)
   };
+
   res.render('urls_index', templateVars);
 });
 
-// Adds a new short URL (key) and long URL (value) pair to the urlDatabase object
-// Redirects the client to view the new short URL
+
+// Adds a new short URL (key) and long URL (value) to the database, redirects to view the new URL 
 app.post('/urls', (req, res) => {
   const userID = req.session.user_id;
   const isLoggedIn = userID ? true : false;
+
   if (!isLoggedIn) {
     return res.send('You must be logged in to shorten URLs!');
   }
+
   const longURL = req.body.longURL;
   const newID = generateRandomString();
   const newURL = {
@@ -71,14 +83,17 @@ app.post('/urls', (req, res) => {
     userID
   };
   urlsDatabase[newID] = newURL;
+
   res.redirect(`/urls/${newID}`);
 });
 
+
 // NOTE: Must be placed ABOVE the routing for 'urls/:id'
-// Displays the form for the client to create a new short url
+// Displays the form to create a new url
 app.get('/urls/new', (req, res) => {
   const userID = req.session.user_id;
   const isLoggedIn = userID ? true : false;
+
   if (!isLoggedIn) {
     return res.redirect('/login');
   }
@@ -87,9 +102,9 @@ app.get('/urls/new', (req, res) => {
   res.render('urls_new', templateVars);
 });
 
-// Displays the specified short URL for the client
+
+// Displays the desired URL
 app.get('/urls/:id', (req, res) => {
-  // Gets the id parameter from the request
   const id = req.params.id;
   const userID = req.session.user_id;
   const isLoggedIn = userID ? true : false;
@@ -102,7 +117,6 @@ app.get('/urls/:id', (req, res) => {
     return res.send('This URL belongs to someone else');
   }
   
-  // We can access the full URL from our database with the id
   const longURL = urlsDatabase[id].longURL;
   const user = usersDatabase[userID];
   const templateVars = {
@@ -114,13 +128,13 @@ app.get('/urls/:id', (req, res) => {
   res.render('urls_show.ejs', templateVars);
 });
 
-// Edits the urlDatabase at key 'id' with the new longURL
+
+// Edits the url database at key 'id' to the submitted long url
 app.put('/urls/:id', (req, res) => {
   const id = req.params.id;
   const userID = req.session.user_id;
   const isLoggedIn = userID ? true : false;
-  const longURL = req.body.longURL;
-
+  
   if (!isLoggedIn) {
     return res.send('You need to be logged in to edit a URL');
   }
@@ -128,14 +142,17 @@ app.put('/urls/:id', (req, res) => {
   if (!urlsDatabase[id]) {
     return res.send('That URL doesn\'t exist!');
   }
-
+  
   if (urlsDatabase[id].userID !== userID) {
     return res.send('You do not own this URL!');
   }
-
+  
+  const longURL = req.body.longURL;
   urlsDatabase[id].longURL = longURL;
+
   res.redirect('/urls');
 });
+
 
 // Deletes the specified id (short URL), from the urlDatabase
 app.delete('/urls/:id/delete', (req, res) => {
@@ -156,30 +173,44 @@ app.delete('/urls/:id/delete', (req, res) => {
   }
 
   delete urlsDatabase[id];
+
   res.redirect('/urls');
 });
 
+
+// _________________________________ //
+// *-------- /login Routes --------* //
+
+// Displays the login page
 app.get('/login', (req, res) => {
   const userID = req.session.user_id;
   const isLoggedIn = userID ? true : false;
 
-  // Redirect if user is already logged in
   if (isLoggedIn) {
     return res.redirect('/urls');
   }
   
   const templateVars = {user: undefined};
+
   res.render('login', templateVars);
 });
+
 
 // Logs the user in
 app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const user = getUserByEmail(email, usersDatabase);
+  const isValidUser = user ? true : false;
+  const isPasswordEmpty = password ? false : true;
+  const isEmailEmpty = email ? false : true;
 
-  // Check if the user exists
-  if (!user) {
+  if(isEmailEmpty || isPasswordEmpty) {
+    res.status(400);
+    return res.send('Error, e-mail and password can\'t be blank.');
+  }
+
+  if (!isValidUser) {
     res.status(403);
     return res.send('Error, no user with that e-mail exists!');
   }
@@ -196,11 +227,19 @@ app.post('/login', (req, res) => {
     });
 });
 
+
+// _________________________________ //
+// *-------- /logout Route --------* //
+
 // Logs the user out
 app.post('/logout', (req, res) => {
   req.session = null;
   res.redirect('/login');
 });
+
+
+// ________________________________ //
+// *------ /register Routes ------* //
 
 // Shows registration page
 app.get('/register', (req, res) => {
@@ -208,29 +247,32 @@ app.get('/register', (req, res) => {
   const user = usersDatabase[userID];
   const isLoggedIn = userID ? true : false;
 
-  // Redirect if user is already logged in
   if (isLoggedIn) {
     return res.redirect('/urls');
   }
 
   const templateVars = {user};
+
   res.render('registration', templateVars);
 });
+
 
 // Registers a new user
 app.post('/register', (req, res) => {
   const id = generateRandomString();
   const email = req.body.email;
-  let password = req.body.password;
+  const password = req.body.password;
+  const isPasswordEmpty = password ? false : true;
+  const isEmailEmpty = email ? false : true;
+  const isExistingEmail = getUserByEmail(email, usersDatabase) ? true : false;
   
-  // Check for empty email / password
-  if (!email || !password) {
+  if (isEmailEmpty || isPasswordEmpty) {
     res.status(400);
     return res.send('Error, e-mail and password can\'t be blank.');
   }
   
   // Check if email already register to a user
-  if (getUserByEmail(email, usersDatabase)) {
+  if (isExistingEmail) {
     res.status(400);
     return res.send(`User: ${email} already exists!`);
   }
@@ -244,9 +286,14 @@ app.post('/register', (req, res) => {
     };
     usersDatabase[id] = newUser;
     req.session.user_id = id;
+
     res.redirect('/urls');
   });
 });
+
+
+// ________________________________ //
+// *-------- Other Routes --------* //
 
 // Handles all invalid paths, redirects to /login
 app.get('/*', (req, res) => {
