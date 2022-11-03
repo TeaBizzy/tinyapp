@@ -110,6 +110,11 @@ app.post('/urls/:id/delete', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
+  const userID = req.cookies['user_id'];
+  // Redirect if user is already logged in
+  if(userID) {
+    res.redirect('/urls');
+  }
   const templateVars = {
     user: undefined
   };
@@ -122,7 +127,7 @@ app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const user = getUserByEmail(email);
-  
+
   // Check if the user exists
   if (!user) {
     res.status(403);
@@ -153,6 +158,10 @@ app.post('/logout', (req, res) => {
 app.get('/register', (req, res) => {
   const userID = req.cookies['user_id'];
   const user = users[userID];
+  // Redirect if user is already logged in
+  if (user) {
+    res.redirect('/urls');
+  }
   const templateVars = {
     user
   };
