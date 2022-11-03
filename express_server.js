@@ -4,7 +4,7 @@
 const express = require('express');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
-const { getUserByEmail, generateRandomString } = require('./helpers')
+const { getUserByEmail, generateRandomString, getUrlsByUserID } = require('./helpers')
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -76,7 +76,7 @@ app.get('/urls', (req, res) => {
   const user = users[userID];
   const templateVars = {
     user,
-    urls: getUrlsByUserID(userID)
+    urls: getUrlsByUserID(userID, urlDatabase)
   };
   res.render('urls_index', templateVars);
 });
@@ -295,19 +295,3 @@ app.get('/hello', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-
-// ______________________________________________________________________________ //
-// *----------------------------- Helper Functions -----------------------------* //
-
-// TODO: Might make sense to refactor these into another file?
-
-const getUrlsByUserID = function(userID) {
-  const result = {};
-  for (const url in urlDatabase) {
-    if (urlDatabase[url].userID === userID) {
-      result[url] = urlDatabase[url];
-    }
-  }
-  return result;
-};
