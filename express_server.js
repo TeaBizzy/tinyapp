@@ -65,7 +65,7 @@ app.get('/urls', (req, res) => {
 // Redirects the client to view the new short URL
 app.post('/urls', (req, res) => {
   const longURL = req.body.longURL;
-  const newID = generateRandomString(6);
+  const newID = generateRandomString();
   urlDatabase[newID] = longURL;
   res.redirect(`/urls/${newID}`);
 });
@@ -124,14 +124,14 @@ app.post('/login', (req, res) => {
   const user = getUserByEmail(email);
   
   // Check if the user exists
-  if(!user) {
+  if (!user) {
     res.status(403);
     res.send('Error, no user with that e-mail exists!');
     return;
   }
 
   // Checks that the password is valid
-  if(user.password !== password) {
+  if (user.password !== password) {
     res.status(403);
     res.send('Error, invalid password');
     return;
@@ -162,7 +162,7 @@ app.get('/register', (req, res) => {
 // Registers a new user
 app.post('/register', (req, res) => {
   // Create new user obj and append it to the users database
-  const id = generateRandomString(6);
+  const id = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
 
@@ -213,7 +213,7 @@ app.listen(PORT, () => {
 
 // TODO: Might make sense to refactor these into another file?
 
-const generateRandomString = function(length = 5) {
+const generateRandomString = function(length = 6) {
   let randStr = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
