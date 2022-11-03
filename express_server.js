@@ -46,6 +46,11 @@ app.get('/', (req, res) => {
 // Redirects the user to the long URL of the matching 'id' key
 app.get('/u/:id', (req, res) => {
   const id = req.params.id;
+  if (!urlDatabase[id]) {
+    res.status(500);
+    res.send('This short URL doesn\'t exist!');
+    return;
+  }
   const longURL = urlDatabase[id];
   res.redirect(longURL);
 });
