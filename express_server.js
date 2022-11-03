@@ -67,7 +67,7 @@ app.get('/urls', (req, res) => {
 });
 
 
-// Adds a new short URL (key) and long URL (value) to the database, redirects to view the new URL 
+// Adds a new short URL (key) and long URL (value) to the database, redirects to view the new URL
 app.post('/urls', (req, res) => {
   const userID = req.session.user_id;
   const isLoggedIn = userID ? true : false;
@@ -205,7 +205,7 @@ app.post('/login', (req, res) => {
   const isPasswordEmpty = password ? false : true;
   const isEmailEmpty = email ? false : true;
 
-  if(isEmailEmpty || isPasswordEmpty) {
+  if (isEmailEmpty || isPasswordEmpty) {
     res.status(400);
     return res.send('Error, e-mail and password can\'t be blank.');
   }
@@ -259,7 +259,6 @@ app.get('/register', (req, res) => {
 
 // Registers a new user
 app.post('/register', (req, res) => {
-  const id = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
   const isPasswordEmpty = password ? false : true;
@@ -279,6 +278,7 @@ app.post('/register', (req, res) => {
   
   // Create new user obj and append it to the users database
   bcrypt.hash(password, saltRounds).then((hashedPassword) => {
+    const id = generateRandomString();
     const newUser = {
       id,
       email,
