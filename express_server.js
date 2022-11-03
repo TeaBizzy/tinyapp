@@ -9,6 +9,7 @@ const { getUserByEmail, generateRandomString, getUrlsByUserID } = require('./hel
 const { promiseImpl } = require('ejs');
 const app = express();
 const PORT = 8080; // default port 8080
+const saltRounds = 10;
 
 app.set('view engine', 'ejs');
 
@@ -212,7 +213,7 @@ app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const user = getUserByEmail(email, users);
-  
+
   // Check if the user exists
   if (!user) {
     res.status(403);
@@ -277,7 +278,7 @@ app.post('/register', (req, res) => {
     return;
   }
   // TODO: Change salt rounds to a varaible
-  bcrypt.hash(password, 15).then((hashedPassword) => {
+  bcrypt.hash(password, saltRounds).then((hashedPassword) => {
     const newUser = {
       id,
       email,
