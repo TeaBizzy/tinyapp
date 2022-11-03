@@ -28,4 +28,10 @@ describe('getUserByEmail()', () => {
 
     expect(typeof user).to.be.equal("object");
   });
+
+  it('should return undefined if no email match is found', () => {
+    const user = getUserByEmail('not-a-user@example.com', testUsers);
+
+    expect(user).to.be.undefined;
+  });
 });
