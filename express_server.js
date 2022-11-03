@@ -40,7 +40,7 @@ const users = {
 // *----------------------------- Middleware -----------------------------* //
 
 app.use(express.urlencoded({extended: true}));
-app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(methodOverride('_method'));
 app.use(cookieSession({
   name: 'session',
   keys: ['key1, key2, key3']
@@ -145,7 +145,7 @@ app.get('/urls/:id', (req, res) => {
 });
 
 // Edits the urlDatabase at key 'id' with the new longURL
-app.post('/urls/:id', (req, res) => {
+app.put('/urls/:id', (req, res) => {
   const id = req.params.id;
   const userID = req.session.user_id;
   const longURL = req.body.longURL;
@@ -170,7 +170,7 @@ app.post('/urls/:id', (req, res) => {
 });
 
 // Deletes the specified id (short URL), from the urlDatabase
-app.post('/urls/:id/delete', (req, res) => {
+app.delete('/urls/:id/delete', (req, res) => {
   const id = req.params.id;
   const userID = req.session.user_id;
 
