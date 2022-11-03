@@ -3,7 +3,7 @@
 
 const { expect } = require('chai');
 const { it } = require('mocha');
-const { getUserByEmail, generateRandomString } = require('../helpers');
+const { getUserByEmail, generateRandomString, getUrlsByUserID } = require('../helpers');
 
 
 // ___________________________________________________________________________ //
@@ -19,6 +19,21 @@ const testUsers = {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "dishwasher-funk"
+  }
+};
+
+const testURLS = {
+  'b2xVn2': {
+    longURL: 'http://www/lighthouselabs.ca',
+    userID: 'aJ48lw'
+  },
+  '9sm5xK': {
+    longURL: 'http://www.google.com',
+    userID: 'aJ48lw'
+  },
+  'Rt89GT': {
+    longURL: 'http://www.youtube.com.com',
+    userID: 'B69t4a'
   }
 };
 
@@ -87,5 +102,41 @@ describe('generateRandomString()', () => {
     const expected = '';
 
     expect(result).to.be.equal(expected);
+  });
+});
+
+
+// _______________________________ //
+// *----- getUrlsByUserID() -----* //
+describe('getUrlsByUserID()', () => {
+
+  it('should return an empty object if userID is invalid', () => {
+    const result = getUrlsByUserID('aaaaaa', testURLS);
+    const expected = {};
+
+    expect(result).to.be.deep.equal(expected);
+  });
+
+  it('should return the correct object if userID is valid', () => {
+    const result = getUrlsByUserID('aJ48lw', testURLS);
+    const expected = {
+      'b2xVn2': {
+        longURL: 'http://www/lighthouselabs.ca',
+        userID: 'aJ48lw'
+      },
+      '9sm5xK': {
+        longURL: 'http://www.google.com',
+        userID: 'aJ48lw'
+      }
+    };
+
+    expect(result).to.be.deep.equal(expected);
+  });
+
+  it('should return empty object if database is undefined', () => {
+    const result = getUrlsByUserID('aJ48lw', undefined);
+    const expected = {};
+
+    expect(result).to.be.deep.equal(expected);
   });
 });
