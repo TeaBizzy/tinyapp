@@ -1,6 +1,13 @@
+// ___________________________________________________________________________ //
+// *----------------------------- Configuration -----------------------------* //
+
 const { expect } = require('chai');
 const { it } = require('mocha');
 const { getUserByEmail } = require('../helpers');
+
+
+// ___________________________________________________________________________ //
+// *------------------------------- Test Data -------------------------------* //
 
 const testUsers = {
   "userRandomID": {
@@ -15,7 +22,13 @@ const testUsers = {
   }
 };
 
+
+// ___________________________________________________________________________ //
+// *--------------------------------- Tests ---------------------------------* //
+
 describe('getUserByEmail()', () => {
+
+
   it('should return the user object with the matching email', () => {
     const user = getUserByEmail('user@example.com', testUsers);
     const expectedUserID = 'userRandomID';
