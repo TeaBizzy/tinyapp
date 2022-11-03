@@ -244,7 +244,7 @@ app.post('/register', (req, res) => {
   // Check for empty email / password
   if (!email || !password) {
     res.status(400);
-    res.send('Error, e-mail and password can\'t be blank. We should probably redirect to a warning??');
+    res.send('Error, e-mail and password can\'t be blank.');
     return;
   }
   
@@ -265,12 +265,6 @@ app.post('/register', (req, res) => {
     req.session.user_id = id;
     res.redirect('/urls');
   });
-});
-
-// A route for testing...
-// TODO: We should remove this!
-app.get('/hello', (req, res) => {
-  res.send('<html><body>Hello <b>World</b></body></html>\n');
 });
 
 
