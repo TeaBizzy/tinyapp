@@ -1,3 +1,9 @@
+// _________________________________________________________________________ //
+// *----------------------------- Information -----------------------------* //
+/*
+  Contains generic helper functions to be used anywhere in the project.
+*/
+
 const generateRandomString = function(length = 6) {
   let randStr = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
