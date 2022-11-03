@@ -120,8 +120,8 @@ app.get('/urls/:id', (req, res) => {
     res.send('Please login to view URLs!');
     return;
   }
-  
-  if(urlDatabase[id].userID !== userID) {
+
+  if (urlDatabase[id].userID !== userID) {
     res.send('This URL belongs to someone else');
     return;
   }
@@ -140,7 +140,24 @@ app.get('/urls/:id', (req, res) => {
 // Edits the urlDatabase at key 'id' with the new longURL
 app.post('/urls/:id', (req, res) => {
   const id = req.params.id;
+  const userID = req.cookies['user_id'];
   const longURL = req.body.longURL;
+
+  if (!userID) {
+    res.send('You need to be logged in to edit a URL');
+    return;
+  }
+
+  if (!urlDatabase[id]) {
+    res.send('That URL doesn\'t exist!');
+    return;
+  }
+
+  if (urlDatabase[id].userID !== userID) {
+    res.send('You do not own this URL!');
+    return;
+  }
+
   urlDatabase[id].longURL = longURL;
   res.redirect('/urls');
 });
