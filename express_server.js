@@ -73,7 +73,16 @@ app.post('/urls', (req, res) => {
 // NOTE: Must be placed ABOVE the routing for 'urls/:id'
 // Displays the form for the client to create a new short url
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  const userID = req.cookies['user_id'];
+  if(!userID) {
+    res.redirect('/login');
+    return;
+  }
+
+  const templateVars = {
+    user: users[userID]
+  };
+  res.render('urls_new', templateVars);
 });
 
 // Displays the specified short URL for the client
