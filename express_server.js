@@ -91,7 +91,6 @@ app.post('/urls', (req, res) => {
     userID
   };
   urlDatabase[newID] = newURL;
-  console.log(urlDatabase);
   res.redirect(`/urls/${newID}`);
 });
 
@@ -282,11 +281,10 @@ const getUserByEmail = function(email) {
 
 const getUrlsByUserID = function(userID) {
   const result = {};
-  for(const url in urlDatabase) {
-    if(urlDatabase[url].userID === userID) {
+  for (const url in urlDatabase) {
+    if (urlDatabase[url].userID === userID) {
       result[url] = urlDatabase[url];
     }
   }
-  console.log(result);
   return result;
 };
