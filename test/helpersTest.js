@@ -3,7 +3,7 @@
 
 const { expect } = require('chai');
 const { it } = require('mocha');
-const { getUserByEmail } = require('../helpers');
+const { getUserByEmail, generateRandomString } = require('../helpers');
 
 
 // ___________________________________________________________________________ //
@@ -26,8 +26,9 @@ const testUsers = {
 // ___________________________________________________________________________ //
 // *--------------------------------- Tests ---------------------------------* //
 
+// ______________________________ //
+// *----- getUserByEmail() -----* //
 describe('getUserByEmail()', () => {
-
 
   it('should return the user object with the matching email', () => {
     const user = getUserByEmail('user@example.com', testUsers);
@@ -52,5 +53,39 @@ describe('getUserByEmail()', () => {
     const user = getUserByEmail('user@example.com', undefined);
 
     expect(user).to.be.undefined;
+  });
+});
+
+
+// ____________________________________ //
+// *----- generateRandomString() -----* //
+describe('generateRandomString()', () => {
+
+  it('should return a string with a length of 4, with 4 as the argument', () => {
+    const resultLength = generateRandomString(4).length;
+    const expectedLength = 4;
+
+    expect(resultLength).to.be.equal(expectedLength);
+  });
+
+  it('should return a string with a length of 6, with no argument passed', () => {
+    const resultLength = generateRandomString().length;
+    const expectedLength = 6;
+
+    expect(resultLength).to.be.equal(expectedLength);
+  });
+
+  it('should return type of string, with a valid argument', () => {
+    const resultType = typeof generateRandomString();
+    const expectedType = 'string';
+
+    expect(resultType).to.be.equal(expectedType);
+  });
+
+  it('should return an empty string, when argument is NaN', () => {
+    const result = generateRandomString(NaN);
+    const expected = '';
+
+    expect(result).to.be.equal(expected);
   });
 });
