@@ -9,26 +9,23 @@ const { getUserByEmail, generateRandomString, getUrlsByUserID } = require('./hel
 const urlsDatabase = require('./databases/urls');
 const usersDatabase = require('./databases/users');
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 const saltRounds = 10;
 
 app.set('view engine', 'ejs');
 
-
 // ________________________________________________________________________ //
 // *----------------------------- Middleware -----------------------------* //
 
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(cookieSession({
   name: 'session',
   keys: ['key1, key2, key3']
 }));
 
-
 // _____________________________________________________________________ //
 // *----------------------------- Routing -----------------------------* //
-
 
 // ________________________________ //
 // *------ Short Link Route ------* //
@@ -36,14 +33,15 @@ app.use(cookieSession({
 // Redirects the user to the long URL of the matching 'id' key
 app.get('/u/:id', (req, res) => {
   const id = req.params.id;
+
   if (!urlsDatabase[id]) {
     res.status(500);
     return res.send('This short URL doesn\'t exist!');
   }
+
   const longURL = urlsDatabase[id].longURL;
   res.redirect(longURL);
 });
-
 
 // ________________________________ //
 // *-------- /urls Routes --------* //
@@ -66,7 +64,6 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-
 // Adds a new short URL (key) and long URL (value) to the database, redirects to view the new URL
 app.post('/urls', (req, res) => {
   const userID = req.session.user_id;
@@ -82,14 +79,13 @@ app.post('/urls', (req, res) => {
     longURL,
     userID
   };
-  urlsDatabase[newID] = newURL;
 
+  urlsDatabase[newID] = newURL;
   res.redirect(`/urls/${newID}`);
 });
 
-
-// NOTE: Must be placed ABOVE the routing for 'urls/:id'
 // Displays the form to create a new url
+// NOTE: Must be placed ABOVE the routing for 'urls/:id'
 app.get('/urls/new', (req, res) => {
   const userID = req.session.user_id;
   const isLoggedIn = userID ? true : false;
@@ -98,10 +94,9 @@ app.get('/urls/new', (req, res) => {
     return res.redirect('/login');
   }
 
-  const templateVars = {user: usersDatabase[userID]};
+  const templateVars = { user: usersDatabase[userID] };
   res.render('urls_new', templateVars);
 });
-
 
 // Displays the desired URL
 app.get('/urls/:id', (req, res) => {
@@ -128,7 +123,6 @@ app.get('/urls/:id', (req, res) => {
   res.render('urls_show.ejs', templateVars);
 });
 
-
 // Edits the url database at key 'id' to the submitted long url
 app.put('/urls/:id', (req, res) => {
   const id = req.params.id;
@@ -149,10 +143,8 @@ app.put('/urls/:id', (req, res) => {
   
   const longURL = req.body.longURL;
   urlsDatabase[id].longURL = longURL;
-
   res.redirect('/urls');
 });
-
 
 // Deletes the specified id (short URL), from the urlDatabase
 app.delete('/urls/:id/delete', (req, res) => {
@@ -173,10 +165,8 @@ app.delete('/urls/:id/delete', (req, res) => {
   }
 
   delete urlsDatabase[id];
-
   res.redirect('/urls');
 });
-
 
 // _________________________________ //
 // *-------- /login Routes --------* //
@@ -190,11 +180,9 @@ app.get('/login', (req, res) => {
     return res.redirect('/urls');
   }
   
-  const templateVars = {user: undefined};
-
+  const templateVars = { user: undefined };
   res.render('login', templateVars);
 });
-
 
 // Logs the user in
 app.post('/login', (req, res) => {
@@ -215,18 +203,18 @@ app.post('/login', (req, res) => {
     return res.send('Error, no user with that e-mail exists!');
   }
 
+  // Creates the session cookie
   bcrypt.compare(password, user.hashedPassword)
     .then((isValid) => {
       if (isValid) {
         req.session.user_id = user.id;
         return res.redirect('/urls');
-      } else {
-        res.status(403);
-        res.send('Error, invalid email or password');
       }
+
+      res.status(403);
+      res.send('Error, invalid email or password');
     });
 });
-
 
 // _________________________________ //
 // *-------- /logout Route --------* //
@@ -236,7 +224,6 @@ app.post('/logout', (req, res) => {
   req.session = null;
   res.redirect('/login');
 });
-
 
 // ________________________________ //
 // *------ /register Routes ------* //
@@ -251,11 +238,9 @@ app.get('/register', (req, res) => {
     return res.redirect('/urls');
   }
 
-  const templateVars = {user};
-
+  const templateVars = { user };
   res.render('registration', templateVars);
 });
-
 
 // Registers a new user
 app.post('/register', (req, res) => {
@@ -270,27 +255,26 @@ app.post('/register', (req, res) => {
     return res.send('Error, e-mail and password can\'t be blank.');
   }
   
-  // Check if email already register to a user
   if (isExistingEmail) {
     res.status(400);
     return res.send(`User: ${email} already exists!`);
   }
   
   // Create new user obj and append it to the users database
-  bcrypt.hash(password, saltRounds).then((hashedPassword) => {
-    const id = generateRandomString();
-    const newUser = {
-      id,
-      email,
-      hashedPassword
-    };
-    usersDatabase[id] = newUser;
-    req.session.user_id = id;
+  bcrypt.hash(password, saltRounds).
+    then((hashedPassword) => {
+      const id = generateRandomString();
+      const newUser = {
+        id,
+        email,
+        hashedPassword
+      };
 
-    res.redirect('/urls');
+      usersDatabase[id] = newUser;
+      req.session.user_id = id;
+      res.redirect('/urls');
   });
 });
-
 
 // ________________________________ //
 // *-------- Other Routes --------* //
@@ -299,7 +283,6 @@ app.post('/register', (req, res) => {
 app.get('/*', (req, res) => {
   res.redirect('/login');
 });
-
 
 // _______________________________________________________________________ //
 // *----------------------------- Listening -----------------------------* //
