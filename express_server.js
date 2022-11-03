@@ -116,6 +116,11 @@ app.get('/urls/:id', (req, res) => {
   const userID = req.cookies['user_id'];
   const user = users[userID];
 
+  if (!userID) {
+    res.send('Please login to view URLs!');
+    return;
+  }
+
   // We can access the full URL from our database with the id
   const longURL = urlDatabase[id].longURL;
   const templateVars = {
