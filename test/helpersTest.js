@@ -34,4 +34,10 @@ describe('getUserByEmail()', () => {
 
     expect(user).to.be.undefined;
   });
+
+  it('should return undefined if database is undefined', () => {
+    const user = getUserByEmail('user@example.com', undefined);
+
+    expect(user).to.be.undefined;
+  });
 });
