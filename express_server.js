@@ -44,7 +44,8 @@ app.get('/u/:id', (req, res) => {
 // Lists all available short URLs and their long URL counterparts
 app.get('/urls', (req, res) => {
   const userID = req.session.user_id;
-  if (!userID) {
+  const isLoggedIn = userID ? true : false;
+  if (!isLoggedIn) {
     return res.send('Error Please login to view URLs');
   }
   const user = usersDatabase[userID];
@@ -59,7 +60,8 @@ app.get('/urls', (req, res) => {
 // Redirects the client to view the new short URL
 app.post('/urls', (req, res) => {
   const userID = req.session.user_id;
-  if (!userID) {
+  const isLoggedIn = userID ? true : false;
+  if (!isLoggedIn) {
     return res.send('You must be logged in to shorten URLs!');
   }
   const longURL = req.body.longURL;
@@ -76,13 +78,12 @@ app.post('/urls', (req, res) => {
 // Displays the form for the client to create a new short url
 app.get('/urls/new', (req, res) => {
   const userID = req.session.user_id;
-  if (!userID) {
+  const isLoggedIn = userID ? true : false;
+  if (!isLoggedIn) {
     return res.redirect('/login');
   }
 
-  const templateVars = {
-    user: usersDatabase[userID]
-  };
+  const templateVars = {user: usersDatabase[userID]};
   res.render('urls_new', templateVars);
 });
 
@@ -91,18 +92,19 @@ app.get('/urls/:id', (req, res) => {
   // Gets the id parameter from the request
   const id = req.params.id;
   const userID = req.session.user_id;
-  const user = usersDatabase[userID];
-
-  if (!userID) {
+  const isLoggedIn = userID ? true : false;
+  
+  if (!isLoggedIn) {
     return res.send('Please login to view URLs!');
   }
-
+  
   if (urlsDatabase[id].userID !== userID) {
     return res.send('This URL belongs to someone else');
   }
-
+  
   // We can access the full URL from our database with the id
   const longURL = urlsDatabase[id].longURL;
+  const user = usersDatabase[userID];
   const templateVars = {
     user,
     id,
@@ -116,9 +118,10 @@ app.get('/urls/:id', (req, res) => {
 app.put('/urls/:id', (req, res) => {
   const id = req.params.id;
   const userID = req.session.user_id;
+  const isLoggedIn = userID ? true : false;
   const longURL = req.body.longURL;
 
-  if (!userID) {
+  if (!isLoggedIn) {
     return res.send('You need to be logged in to edit a URL');
   }
 
@@ -138,8 +141,9 @@ app.put('/urls/:id', (req, res) => {
 app.delete('/urls/:id/delete', (req, res) => {
   const id = req.params.id;
   const userID = req.session.user_id;
+  const isLoggedIn = userID ? true : false;
 
-  if (!userID) {
+  if (!isLoggedIn) {
     return res.send('You need to be logged in to delete a URL');
   }
 
@@ -157,10 +161,13 @@ app.delete('/urls/:id/delete', (req, res) => {
 
 app.get('/login', (req, res) => {
   const userID = req.session.user_id;
+  const isLoggedIn = userID ? true : false;
+
   // Redirect if user is already logged in
-  if (userID) {
+  if (isLoggedIn) {
     return res.redirect('/urls');
   }
+  
   const templateVars = {user: undefined};
   res.render('login', templateVars);
 });
@@ -199,17 +206,19 @@ app.post('/logout', (req, res) => {
 app.get('/register', (req, res) => {
   const userID = req.session.user_id;
   const user = usersDatabase[userID];
+  const isLoggedIn = userID ? true : false;
+
   // Redirect if user is already logged in
-  if (user) {
+  if (isLoggedIn) {
     return res.redirect('/urls');
   }
+
   const templateVars = {user};
   res.render('registration', templateVars);
 });
 
 // Registers a new user
 app.post('/register', (req, res) => {
-  // Create new user obj and append it to the users database
   const id = generateRandomString();
   const email = req.body.email;
   let password = req.body.password;
@@ -220,11 +229,13 @@ app.post('/register', (req, res) => {
     return res.send('Error, e-mail and password can\'t be blank.');
   }
   
-  // Check if email is already register to a user
+  // Check if email already register to a user
   if (getUserByEmail(email, usersDatabase)) {
     res.status(400);
     return res.send(`User: ${email} already exists!`);
   }
+  
+  // Create new user obj and append it to the users database
   bcrypt.hash(password, saltRounds).then((hashedPassword) => {
     const newUser = {
       id,
