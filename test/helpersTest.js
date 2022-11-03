@@ -15,12 +15,17 @@ const testUsers = {
   }
 };
 
-describe('getUserByEmail', () => {
+describe('getUserByEmail()', () => {
   it('should return the user object with the matching email', () => {
     const user = getUserByEmail('user@example.com', testUsers);
     const expectedUserID = 'userRandomID'
 
-    console.log(user);
     expect(expectedUserID).to.be.equal(user['id']);
+  });
+
+  it('should return type of object if the object contains a matching email', () => {
+    const user = getUserByEmail('user@example.com', testUsers);
+
+    expect(typeof user).to.be.equal("object");
   });
 });
