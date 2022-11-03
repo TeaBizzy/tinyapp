@@ -123,6 +123,7 @@ app.get('/login', (req, res) => {
   // Redirect if user is already logged in
   if(userID) {
     res.redirect('/urls');
+    return;
   }
   const templateVars = {
     user: undefined
@@ -170,6 +171,7 @@ app.get('/register', (req, res) => {
   // Redirect if user is already logged in
   if (user) {
     res.redirect('/urls');
+    return;
   }
   const templateVars = {
     user
