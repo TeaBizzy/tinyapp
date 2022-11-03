@@ -165,6 +165,23 @@ app.post('/urls/:id', (req, res) => {
 // Deletes the specified id (short URL), from the urlDatabase
 app.post('/urls/:id/delete', (req, res) => {
   const id = req.params.id;
+  const userID = req.cookies['user_id'];
+
+  if (!userID) {
+    res.send('You need to be logged in to delete a URL');
+    return;
+  }
+
+  if (!urlDatabase[id]) {
+    res.send('That URL doesn\'t exist!');
+    return;
+  }
+
+  if (urlDatabase[id].userID !== userID) {
+    res.send('You do not own this URL!');
+    return;
+  }
+
   delete urlDatabase[id];
   res.redirect('/urls');
 });
