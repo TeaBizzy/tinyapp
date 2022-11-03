@@ -71,7 +71,7 @@ app.get('/urls', (req, res) => {
   const user = users[userID];
   const templateVars = {
     user,
-    urls: urlDatabase
+    urls: getUrlsByUserID(userID)
   };
   res.render('urls_index', templateVars);
 });
@@ -278,4 +278,15 @@ const getUserByEmail = function(email) {
     }
   }
   return false;
+};
+
+const getUrlsByUserID = function(userID) {
+  const result = {};
+  for(const url in urlDatabase) {
+    if(urlDatabase[url].userID === userID) {
+      result[url] = urlDatabase[url];
+    }
+  }
+  console.log(result);
+  return result;
 };
