@@ -273,7 +273,7 @@ app.post('/register', (req, res) => {
       usersDatabase[id] = newUser;
       req.session.user_id = id;
       res.redirect('/urls');
-  });
+    });
 });
 
 // ________________________________ //
