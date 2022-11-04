@@ -126,7 +126,7 @@
 2. Click the blue short url
 <br/>
 
-![Tiny App](images/shortUrlLink.png)
+![Tiny App](images/ShortUrlLink.png)
 
 ### Method 2
 * Enter the short url into the browser with the following template:
